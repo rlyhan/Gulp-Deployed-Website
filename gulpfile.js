@@ -92,12 +92,10 @@ gulp.task("build",
  */
 gulp.task("default", gulp.parallel(
   'watch', gulp.series('build', function() {
-    gulp.src(['./'])
-        .pipe(webserver({
-          port: 3000,
-          livereload: true,
-          directoryListing: true,
-          open: 'http://localhost:3000'
-        }));
+    webserver({
+      port: 3000,
+      livereload: true,
+      open: 'http://localhost:3000'
+    });
   })
 ));
