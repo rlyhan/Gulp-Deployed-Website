@@ -67,7 +67,7 @@ gulp.task("clean", function() {
  * Reloads project in browser
  */
 gulp.task('watch', function() {
-  gulp.watch('sass/*.scss', gulp.parallel('styles'));
+  gulp.watch('sass/*.scss', gulp.series('styles', 'reload'));
 });
 
 
@@ -75,7 +75,8 @@ gulp.task('watch', function() {
  * Reloads project in browser
  */
 gulp.task('reload', function() {
-  livereload.listen();
+  gulp.src('./')
+      .pipe(livereload());
 });
 
 /*
