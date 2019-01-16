@@ -55,6 +55,22 @@ gulp.task("images", function() {
 });
 
 /*
+ * Move icons folder into dist/icons folder
+ */
+gulp.task("icons", function() {
+  return gulp.src(['icons/**'])
+      .pipe(gulp.dest('dist/icons'))
+});
+
+/*
+ * Move index.html into dist folder
+ */
+gulp.task("html", function() {
+  return gulp.src(['*.html'])
+      .pipe(gulp.dest('dist'))
+});
+
+/*
  * Delete all files and folders in dist folder
  */
 gulp.task("clean", function() {
@@ -70,12 +86,11 @@ gulp.task('watch', function() {
   gulp.watch('sass/*.scss', gulp.series('styles', 'reload'));
 });
 
-
 /*
  * Reloads project in browser
  */
 gulp.task('reload', function() {
-  gulp.src('./')
+  return gulp.src('dist')
       .pipe(livereload());
 });
 
@@ -84,19 +99,23 @@ gulp.task('reload', function() {
  * Then runs 'scripts', 'styles', and 'images' commands
  */
 gulp.task("build",
-  gulp.series('clean', gulp.parallel('scripts', 'styles', 'images'))
+  gulp.series('clean', gulp.parallel('scripts', 'styles', 'images', 'icons', 'html'))
 );
+
+/*
+ * Serves project using local web server on port 3000
+ */
+gulp.task("serve", function() {
+  return gulp.src('dist')
+      .pipe(webserver({
+          port: 3000,
+          livereload: true,
+          open: 'http://localhost:3000'
+      }));
+});
 
 /*
  * Runs 'build' command as default behaviour, ie. when 'gulp' is called
  * Serves project using local web server on port 3000
  */
-gulp.task("default", gulp.parallel(
-  'watch', gulp.series('build', function() {
-    webserver({
-      port: 3000,
-      livereload: true,
-      open: 'http://localhost:3000'
-    });
-  })
-));
+gulp.task("default", gulp.series('build', 'serve', 'watch'));
