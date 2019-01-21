@@ -6,8 +6,9 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
 var sass = require('gulp-sass');
-var cleanCSS = require('gulp-clean-css');
+var csso = require('gulp-csso');
 var maps = require('gulp-sourcemaps');
 var imagemin = require('gulp-imagemin');
 var webserver = require('gulp-webserver');
@@ -17,31 +18,35 @@ var del = require('del');
 /*
  * Concatenate, minify, and copy all JS files into all.min.js file
  * Copy all.min.js file to dist/scripts folder
- * Generate source maps for the JS files
+ * Generate source maps for the JS files and copy to dist folder
  */
 gulp.task("scripts", function() {
-  return gulp.src(['./js/circle/*.js'])
-      .pipe(maps.init())
-      .pipe(concat("all.min.js"))
-      .pipe(uglify())
-      .pipe(maps.write('./'))
-      .pipe(gulp.dest('dist/scripts'));
+ return gulp.src(['./js/**/*.js'])
+   .pipe(concat('all.js'))
+   .pipe(uglify())
+   .pipe(rename('all.min.js'))
+   .pipe(maps.init())
+   .pipe(maps.write('../'))
+   .pipe(gulp.dest('dist/scripts'));
 });
 
 /*
  * Compile all SCSS files into CSS files
+ * Concatenate to css/global.css 
  * Concatenate and minify the CSS files into all.min.cs
  * Copy all.min.css to dist/styles folder
- * Generate source maps for the CSS files
+ * Generate source maps for the CSS files and copy to dist folder
  */
 gulp.task("styles", function() {
   return gulp.src('./sass/*.scss')
-      .pipe(maps.init())
       .pipe(sass())
-      .pipe(concat("all.min.css"))
-      .pipe(cleanCSS())
-      .pipe(maps.write('./'))
-      .pipe(gulp.dest('dist/styles'));
+      .pipe(concat('global.css'))
+      .pipe(gulp.dest('css'))
+      .pipe(csso())
+      .pipe(rename("all.min.css"))
+      .pipe(maps.init())
+      .pipe(maps.write('../'))
+      .pipe(gulp.dest('dist/styles'))
 });
 
 /*
@@ -106,7 +111,7 @@ gulp.task("build",
  * Serves project using local web server on port 3000
  */
 gulp.task("serve", function() {
-  return gulp.src('dist')
+  return gulp.src('./')
       .pipe(webserver({
           port: 3000,
           livereload: true,
