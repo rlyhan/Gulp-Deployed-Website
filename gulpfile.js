@@ -32,13 +32,13 @@ gulp.task("scripts", function() {
 
 /*
  * Compile all SCSS files into CSS files
- * Concatenate to css/global.css 
+ * Concatenate to css/global.css
  * Concatenate and minify the CSS files into all.min.cs
  * Copy all.min.css to dist/styles folder
  * Generate source maps for the CSS files and copy to dist folder
  */
 gulp.task("styles", function() {
-  return gulp.src('./sass/*.scss')
+  return gulp.src('./sass/**/**.scss')
       .pipe(sass())
       .pipe(concat('global.css'))
       .pipe(gulp.dest('css'))
